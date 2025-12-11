@@ -7,6 +7,8 @@ export function useTodos() {
   if (!context) {
     throw new Error("useTodos debe usarse dentro de <TodoProvider");
   }
-
-  return context;
+  return {
+    ...context,
+    todos: context.state.todos, // acceso directo a los todos
+  };
 }

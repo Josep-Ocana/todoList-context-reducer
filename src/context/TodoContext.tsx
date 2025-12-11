@@ -1,76 +1,48 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import type { Todo } from "../types";
+import { init, initialState, todoReducer, type State } from "./todoReducer";
 
 // 1. TYPE
 type TodoContextType = {
-  todos: Todo[];
+  state: State;
   addTodo: (text: string) => void;
   deleteTodo: (id: Todo["id"]) => void;
   toggleTodo: (id: Todo["id"]) => void;
-  updateTodo: (id: number, newText: string) => void;
+  updateTodo: (id: Todo["id"], newText: string) => void;
 };
 
 // 2. CONTEXT
 export const TodoContext = createContext<TodoContextType | null>(null);
 
-// 2. INITIALSTATE
-const initialState = () => {
-  try {
-    const almacenados = localStorage.getItem("todos");
-    return almacenados ? JSON.parse(almacenados) : [];
-  } catch {
-    return [];
-  }
-};
-
 // 3. PROVIDER
 export function TodoProvider({ children }: { children: React.ReactNode }) {
-  const [todos, setTodos] = useState<Todo[]>(initialState);
+  const [state, dispatch] = useReducer(todoReducer, initialState, init);
 
   // 3.1 Guardamos en el localStorage
   useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
+    localStorage.setItem("todos", JSON.stringify(state.todos));
+  }, [state.todos]);
 
   // 3.2 Funciones
   const addTodo = (text: string) => {
-    const newTodo = {
-      id: Date.now(),
-      text,
-      completed: false,
-    };
-    setTodos((prev) => [...prev, newTodo]);
+    dispatch({ type: "ADD_TODO", payload: text });
   };
 
   const deleteTodo = (id: Todo["id"]) => {
-    setTodos((prev) => prev.filter((tarea) => tarea.id !== id));
+    dispatch({ type: "DELETE_TODO", payload: id });
   };
 
   const toggleTodo = (id: Todo["id"]) => {
-    setTodos((prev) =>
-      prev.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, completed: !todo.completed };
-        }
-        return todo;
-      })
-    );
+    dispatch({ type: "TOGGLE_TODO", payload: id });
   };
 
   const updateTodo = (id: Todo["id"], newText: string) => {
-    setTodos((prev) =>
-      prev.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, text: newText };
-        }
-        return todo;
-      })
-    );
+    dispatch({ type: "UPDATE_TODO", payload: { id, text: newText } });
   };
 
   return (
     <TodoContext.Provider
-      value={{ todos, addTodo, deleteTodo, toggleTodo, updateTodo }}
+      value={{ state, addTodo, deleteTodo, toggleTodo, updateTodo }}
     >
       {children}
     </TodoContext.Provider>
