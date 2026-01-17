@@ -73,7 +73,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
     if (!todo) return;
 
     // Actualizamos el campo 'completed' en Supabase
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("todos")
       .update({ completed: !todo.completed })
       .eq("id", id)
@@ -94,7 +94,7 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
     if (!todo) return;
 
     // Actualizamos el campo texto en Supabase
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("todos")
       .update({ text: newText })
       .eq("id", id)
