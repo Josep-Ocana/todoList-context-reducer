@@ -10,7 +10,7 @@ export const initialState: State = {
 
 export type Action =
   | { type: "SET_TODOS"; payload: Todo[] }
-  | { type: "ADD_TODO"; payload: string }
+  | { type: "ADD_TODO"; payload: Todo }
   | { type: "DELETE_TODO"; payload: Todo["id"] }
   | { type: "TOGGLE_TODO"; payload: Todo["id"] }
   | { type: "UPDATE_TODO"; payload: { id: Todo["id"]; text: string } };
@@ -24,12 +24,7 @@ export function todoReducer(state: State, action: Action): State {
       };
 
     case "ADD_TODO":
-      const newTodo = {
-        id: Date.now(),
-        text: action.payload,
-        completed: false,
-      };
-      return { ...state, todos: [...state.todos, newTodo] };
+      return { ...state, todos: [...state.todos, action.payload] };
 
     case "DELETE_TODO":
       return {
