@@ -9,21 +9,20 @@ export const initialState: State = {
 };
 
 export type Action =
+  | { type: "SET_TODOS"; payload: Todo[] }
   | { type: "ADD_TODO"; payload: string }
   | { type: "DELETE_TODO"; payload: Todo["id"] }
   | { type: "TOGGLE_TODO"; payload: Todo["id"] }
   | { type: "UPDATE_TODO"; payload: { id: Todo["id"]; text: string } };
 
-export const init = (): State => {
-  try {
-    const almacenados = localStorage.getItem("todos");
-    return { todos: almacenados ? JSON.parse(almacenados) : [] };
-  } catch {
-    return { todos: [] };
-  }
-};
 export function todoReducer(state: State, action: Action): State {
   switch (action.type) {
+    case "SET_TODOS":
+      return {
+        ...state,
+        todos: action.payload,
+      };
+
     case "ADD_TODO":
       const newTodo = {
         id: Date.now(),

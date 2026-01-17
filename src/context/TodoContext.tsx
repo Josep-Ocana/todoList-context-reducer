@@ -1,6 +1,6 @@
 import { createContext, useEffect, useReducer } from "react";
 import type { Todo } from "../types";
-import { init, initialState, todoReducer, type State } from "./todoReducer";
+import { initialState, todoReducer, type State } from "./todoReducer";
 
 // 1. TYPE
 type TodoContextType = {
@@ -16,7 +16,7 @@ export const TodoContext = createContext<TodoContextType | null>(null);
 
 // 3. PROVIDER
 export function TodoProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(todoReducer, initialState, init);
+  const [state, dispatch] = useReducer(todoReducer, initialState);
 
   // 3.1 Guardamos en el localStorage
   useEffect(() => {
