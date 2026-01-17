@@ -1,5 +1,5 @@
 import { createContext, useEffect, useReducer } from "react";
-import { supabase } from "../lib/superbase";
+import { supabase } from "../lib/supabase";
 import type { Todo } from "../types";
 import { initialState, todoReducer, type State } from "./todoReducer";
 
